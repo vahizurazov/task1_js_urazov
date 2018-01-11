@@ -1,4 +1,4 @@
-debugger;
+
 document.getElementById("searchHeader").addEventListener("click", getPosts);
 
 var store = [];
@@ -17,7 +17,7 @@ function findUser () {
 	if(document.getElementById("modalWin")){
 		document.getElementById("modalWin").parentElement.removeChild(document.getElementById("modalWin"));
 		return;
-		
+
 	}
 
 	var btn = this;
