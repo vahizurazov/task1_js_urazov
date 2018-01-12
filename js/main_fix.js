@@ -2,22 +2,11 @@ var findModule = (function(){
 	document.getElementById("searchHeader").addEventListener("click", getPosts);
 
 	var store = [];
-	
-	function getPosts(){
+function getPosts(){
 
 		fetch('https://jsonplaceholder.typicode.com/posts')
-		.then(function(response) {
-			return response.json();
-		})
+		.then((response) => response.json())
 		.then(createList);
-	// var xhr = new XMLHttpRequest();
-	// xhr.open('GET', 'https://jsonplaceholder.typicode.com/posts', true);
-	// xhr.send();
-	// xhr.onload = ()=>{
-	// 	console.log(JSON.parse(xhr.responseText));
-	// 	store = JSON.parse(xhr.responseText);
-	// 	createList(store);
-	// 	};
 };
 function findUser () {
 	
@@ -32,16 +21,8 @@ function findUser () {
 	function getUserInfo (userId){
 
 		fetch('https://jsonplaceholder.typicode.com/users/' + userId)
-		.then(function(response) {return response.json();})
+		.then((response) => response.json())
 		.then(createUser.bind(btn));
-
-		// var xhr = new XMLHttpRequest();
-		// xhr.open('GET', 'https://jsonplaceholder.typicode.com/users/' + userId, true);
-		// xhr.send();
-		// xhr.onload = ()=>{
-		// 	console.log(JSON.parse(xhr.responseText));	
-		// 	createUser.call(btn, JSON.parse(xhr.responseText));
-		// 	};
 	};
 	getUserInfo(userId);
 };
@@ -56,26 +37,16 @@ function findCommentUser () {
 	function getUserInfoCom (userIdCom){
 
 		fetch('https://jsonplaceholder.typicode.com/posts/' + idCom + '/comments')
-		.then(function(response) {return response.json();})
+		.then((response) => response.json())
 		.then(createComment.bind(btn));
-
-		// var xhr = new XMLHttpRequest();
-		// xhr.open('GET', 'https://jsonplaceholder.typicode.com/posts/' + idCom + '/comments', true);
-		// xhr.send();
-		// xhr.onload = ()=>{
-		// 	console.log(JSON.parse(xhr.responseText));	
-		// 	createComment.call(btn, JSON.parse(xhr.responseText));
-		// 	};
 	};
 
 	getUserInfoCom(idCom);
-
 };
 function createUser(obj){
 
 	var modalWinUser = this.parentElement.appendChild(document.createElement('div'));
 	modalWinUser.id = 'modalWin';
-
 	modalWinUser.innerHTML = `
 	<p class='mb-1'>name: ${obj.name}</p>
 	<p class='mb-1'>username:  ${obj.username}</p>
@@ -98,7 +69,6 @@ function createUser(obj){
 	<li class='mb-3'>bs: ${obj.company.bs}</li>
 	</ul>
 	`;
-
 };
 function createComment(arr){
 	var divPost = this.parentElement.appendChild(document.createElement('ul'));
@@ -127,17 +97,16 @@ function createList(arr){
 		ulItem.className = 'liItem';
 		var liItem = ulItem.appendChild(document.createElement('li'));
 		liItem.style.position = 'relative';
-		var userName = liItem.appendChild(document.createElement('p'));
-		userName.innerHTML = item.userId;
 
 		var title = liItem.appendChild(document.createElement('p'));
-		title.innerHTML = item.title;
+		title.innerHTML = '<strong>Title: </strong>' + item.title;
 
 		var body = liItem.appendChild(document.createElement('p'));
-		body.innerHTML = item.body;
+		body.innerHTML = '<strong>Body: </strong>' + item.body;
 
 		var bottomInfo = liItem.appendChild(document.createElement('bottom'));
 		bottomInfo.className = "btn btn-info";
+		bottomInfo.style.margin = '0 50px 0 0'
 		bottomInfo.innerHTML = "Иформация о пользователе";
 		bottomInfo.userId = item.userId;
 		bottomInfo.addEventListener("click", findUser);
