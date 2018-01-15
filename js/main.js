@@ -1,28 +1,24 @@
 var findModule = (function(){
-	document.getElementById("searchHeader").addEventListener("click", getPosts);
+
+	var searchHeader = document.getElementById("searchHeader");
+		searchHeader.addEventListener("click", getPosts);
 
 	var store = [];
-	
-	function getPosts(){
+	var urlApi = 'https://jsonplaceholder.typicode.com/';
 
-		fetch('https://jsonplaceholder.typicode.com/posts')
+	
+function getPosts () {
+
+		fetch(urlApi + 'posts')
 		.then(function(response) {
 			return response.json();
 		})
 		.then(createList);
-	// var xhr = new XMLHttpRequest();
-	// xhr.open('GET', 'https://jsonplaceholder.typicode.com/posts', true);
-	// xhr.send();
-	// xhr.onload = ()=>{
-	// 	console.log(JSON.parse(xhr.responseText));
-	// 	store = JSON.parse(xhr.responseText);
-	// 	createList(store);
-	// 	};
 };
 function findUser () {
-	
-	if(document.getElementById("modalWin")){
-		document.getElementById("modalWin").parentElement.removeChild(document.getElementById("modalWin"));
+	var infoDelete = document.getElementById("modalWin");
+	if(infoDelete){
+		infoDelete.parentElement.removeChild(infoDelete);
 		return;
 	}
 
@@ -31,17 +27,9 @@ function findUser () {
 
 	function getUserInfo (userId){
 
-		fetch('https://jsonplaceholder.typicode.com/users/' + userId)
+		fetch(urlApi + 'users/' + userId)
 		.then(function(response) {return response.json();})
 		.then(createUser.bind(btn));
-
-		// var xhr = new XMLHttpRequest();
-		// xhr.open('GET', 'https://jsonplaceholder.typicode.com/users/' + userId, true);
-		// xhr.send();
-		// xhr.onload = ()=>{
-		// 	console.log(JSON.parse(xhr.responseText));	
-		// 	createUser.call(btn, JSON.parse(xhr.responseText));
-		// 	};
 	};
 	getUserInfo(userId);
 };
@@ -55,23 +43,14 @@ function findCommentUser () {
 	var idCom = this.postId;
 	function getUserInfoCom (userIdCom){
 
-		fetch('https://jsonplaceholder.typicode.com/posts/' + idCom + '/comments')
+		fetch(urlApi + 'posts/' + idCom + '/comments')
 		.then(function(response) {return response.json();})
 		.then(createComment.bind(btn));
-
-		// var xhr = new XMLHttpRequest();
-		// xhr.open('GET', 'https://jsonplaceholder.typicode.com/posts/' + idCom + '/comments', true);
-		// xhr.send();
-		// xhr.onload = ()=>{
-		// 	console.log(JSON.parse(xhr.responseText));	
-		// 	createComment.call(btn, JSON.parse(xhr.responseText));
-		// 	};
 	};
 
 	getUserInfoCom(idCom);
-
 };
-function createUser(obj){
+function createUser (obj) {
 
 	var modalWinUser = this.parentElement.appendChild(document.createElement('div'));
 	modalWinUser.id = 'modalWin';
@@ -104,9 +83,10 @@ function createComment(arr){
 	var divPost = this.parentElement.appendChild(document.createElement('ul'));
 	divPost.id = 'postIdDel';
 	divPost.className = 'list-group';
+	var fragment = document.createDocumentFragment();
 	
 	arr.forEach(function(item){
-		var liItem = divPost.appendChild(document.createElement('li'));
+		var liItem = fragment.appendChild(document.createElement('li'));
 		liItem.className = 'list-group-item';
 
 		var userName = liItem.appendChild(document.createElement('p'));
@@ -119,25 +99,27 @@ function createComment(arr){
 		body.innerHTML = '<strong>Comments: </strong>' + item.body;
 
 	});
+	divPost.appendChild(fragment);
 };
 function createList(arr){
+	var ulItem = document.getElementById('container1').appendChild(document.createElement('ul'));
+		ulItem.className = 'liItem';
+		var fragment = document.createDocumentFragment();
 	
 	arr.forEach(function(item){
-		var ulItem = document.getElementById('container1').appendChild(document.createElement('ul'));
-		ulItem.className = 'liItem';
-		var liItem = ulItem.appendChild(document.createElement('li'));
+		
+		var liItem = fragment.appendChild(document.createElement('li'));
 		liItem.style.position = 'relative';
-		var userName = liItem.appendChild(document.createElement('p'));
-		userName.innerHTML = item.userId;
 
 		var title = liItem.appendChild(document.createElement('p'));
-		title.innerHTML = item.title;
+		title.innerHTML = '<strong>Title: </strong>' + item.title;
 
 		var body = liItem.appendChild(document.createElement('p'));
-		body.innerHTML = item.body;
+		body.innerHTML = '<strong>Body: </strong>' + item.body;
 
 		var bottomInfo = liItem.appendChild(document.createElement('bottom'));
 		bottomInfo.className = "btn btn-info";
+		bottomInfo.style.margin = '0 50px 0 0'
 		bottomInfo.innerHTML = "Иформация о пользователе";
 		bottomInfo.userId = item.userId;
 		bottomInfo.addEventListener("click", findUser);
@@ -148,6 +130,7 @@ function createList(arr){
 		bottomComment.postId = item.id;
 		bottomComment.addEventListener("click", findCommentUser);
 	});
-	document.getElementById("searchHeader").removeEventListener("click", getPosts);
+	ulItem.appendChild(fragment);
+	searchHeader.removeEventListener("click", getPosts);
 };
 })();
