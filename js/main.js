@@ -8,7 +8,7 @@ var findModule = (function(){
 
 	
 function getPosts () {
-
+		loaderGif(event.target);
 		fetch(urlApi + 'posts')
 		.then(function(response) {
 			return response.json();
@@ -16,11 +16,12 @@ function getPosts () {
 		.then(createList);
 };
 function findUser () {
+	
 	var infoDelete = document.getElementById("modalWin");
 	if(infoDelete){
 		infoDelete.parentElement.removeChild(infoDelete);
 		return;
-	}
+	} else loaderGif(event.target);
 
 	var btn = this;
 	userId = this.userId;
@@ -38,7 +39,7 @@ function findCommentUser () {
 	if(postDelete){
 		postDelete.parentElement.removeChild(postDelete);
 		return;
-	}
+	}else loaderGif(event.target);
 	var btn = this;
 	var idCom = this.postId;
 	function getUserInfoCom (userIdCom){
@@ -51,10 +52,14 @@ function findCommentUser () {
 	getUserInfoCom(idCom);
 };
 function createUser (obj) {
-
-	var modalWinUser = this.parentElement.appendChild(document.createElement('div'));
+	var modalWinUser = document.createElement('div');
+	if(this.parentElement.getElementsByTagName('ul')[0]){
+		this.parentElement.insertBefore(modalWinUser, this.parentElement.getElementsByTagName('ul')[0])
+	} else{
+		this.parentElement.appendChild(modalWinUser);
+	}
 	modalWinUser.id = 'modalWin';
-
+	 
 	modalWinUser.innerHTML = `
 	<p class='mb-1'>name: ${obj.name}</p>
 	<p class='mb-1'>username:  ${obj.username}</p>
@@ -77,7 +82,7 @@ function createUser (obj) {
 	<li class='mb-3'>bs: ${obj.company.bs}</li>
 	</ul>
 	`;
-
+	document.getElementsByClassName('loadStop')[0].parentElement.removeChild(document.getElementsByClassName('loadStop')[0]);
 };
 function createComment(arr){
 	var divPost = this.parentElement.appendChild(document.createElement('ul'));
@@ -100,10 +105,13 @@ function createComment(arr){
 
 	});
 	divPost.appendChild(fragment);
+	document.getElementsByClassName('loadStop')[0].parentElement.removeChild(document.getElementsByClassName('loadStop')[0]);
 };
 function createList(arr){
 	var ulItem = document.getElementById('container1').appendChild(document.createElement('ul'));
+
 		ulItem.className = 'liItem';
+		
 		var fragment = document.createDocumentFragment();
 	
 	arr.forEach(function(item){
@@ -132,5 +140,20 @@ function createList(arr){
 	});
 	ulItem.appendChild(fragment);
 	searchHeader.removeEventListener("click", getPosts);
+	document.getElementsByClassName('loadStop')[0].parentElement.removeChild(document.getElementsByClassName('loadStop')[0]);
+};
+function loaderGif(target){
+	console.log(target);
+	var loader = target.parentElement.appendChild(document.createElement('div'));
+		loader.className = 'loadStop';
+		if(target.id === 'searchHeader') {
+			loader.innerHTML = `<img src="images/loader.gif" style="width:50%;height:50%;position:absolute;left:0;top:0;right:0;bottom:0;margin:auto;">`;
+		};
+		if (target.innerHTML === 'Иформация о пользователе') {
+			loader.innerHTML = `<img src="images/loader.gif" style="width:50px;height:50px;position:absolute;left:0;top:0;right:0;bottom:0;margin:auto;">`;
+		}
+		if (target.innerHTML === 'Коментарии к посту') {
+			loader.innerHTML = `<img src="images/loader.gif" style="width:200px;height:200px;position:absolute;left:0;top:0;right:0;bottom:0;margin:auto;">`;
+		}
 };
 })();

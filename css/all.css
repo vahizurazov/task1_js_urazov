@@ -107,6 +107,7 @@ src: url('../fonts/stymieextraboldbt.ttf');
 }
 #text h1 {
 	text-align: center;
+	position: relative;
 }
 .list-group-item p {
 	margin: 0;
