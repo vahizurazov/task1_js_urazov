@@ -5,6 +5,7 @@ var findModule = (function(){
 
 	var store = [];
 	var urlApi = 'https://jsonplaceholder.typicode.com/';
+	var getClassLoadStop;
 
 	
 function getPosts () {
@@ -82,7 +83,7 @@ function createUser (obj) {
 	<li class='mb-3'>bs: ${obj.company.bs}</li>
 	</ul>
 	`;
-	document.getElementsByClassName('loadStop')[0].parentElement.removeChild(document.getElementsByClassName('loadStop')[0]);
+	getClassLoadStop.parentElement.removeChild(getClassLoadStop);
 };
 function createComment(arr){
 	var divPost = this.parentElement.appendChild(document.createElement('ul'));
@@ -105,7 +106,7 @@ function createComment(arr){
 
 	});
 	divPost.appendChild(fragment);
-	document.getElementsByClassName('loadStop')[0].parentElement.removeChild(document.getElementsByClassName('loadStop')[0]);
+	getClassLoadStop.parentElement.removeChild(getClassLoadStop);
 };
 function createList(arr){
 	var ulItem = document.getElementById('container1').appendChild(document.createElement('ul'));
@@ -140,12 +141,14 @@ function createList(arr){
 	});
 	ulItem.appendChild(fragment);
 	searchHeader.removeEventListener("click", getPosts);
-	document.getElementsByClassName('loadStop')[0].parentElement.removeChild(document.getElementsByClassName('loadStop')[0]);
+	getClassLoadStop.parentElement.removeChild(getClassLoadStop);
 };
 function loaderGif(target){
 	console.log(target);
 	var loader = target.parentElement.appendChild(document.createElement('div'));
 		loader.className = 'loadStop';
+		getClassLoadStop = document.getElementsByClassName('loadStop')[0];
+		console.log(getClassLoadStop);
 		if(target.id === 'searchHeader') {
 			loader.innerHTML = `<img src="images/loader.gif" style="width:50%;height:50%;position:absolute;left:0;top:0;right:0;bottom:0;margin:auto;">`;
 		};
