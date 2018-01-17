@@ -2,54 +2,80 @@ var findModule = (function(){
 
 	var searchHeader = document.getElementById("searchHeader");
 		searchHeader.addEventListener("click", getPosts);
+
 	var store = [];
 	var urlApi = 'https://jsonplaceholder.typicode.com/';
-	var getClassLoadStop;	
+	var getClassLoadStop;
+	var btn;
+
 function getPosts () {
 		loaderGif(event.target);
 		fetch(urlApi + 'posts')
 		.then(function(response) {
 			return response.json();
 		})
-		.then(createList);
-};
-function findUser () {
+		.then(createList)
+		.then(renderList);
+};//РАБОТАЕТ!!!//РАБОТАЕТ!!!//РАБОТАЕТ!!!
+
+function getUserInfo (userId){
 	
+	if (getPostInfo(userId)) return;
+
+	fetch(urlApi + 'users/' + userId)
+	.then(function(response) {return response.json();})
+	.then(createUser.bind(btn, userId));
+};
+
+function findUser () {
 	var infoDelete = document.getElementById("modalWin");
+
 	if(infoDelete){
 		infoDelete.parentElement.removeChild(infoDelete);
 		return;
 	} else loaderGif(event.target);
 
-	var btn = this;
+	btn = this;
 	userId = this.userId;
 
-	function getUserInfo (userId){
-
-		fetch(urlApi + 'users/' + userId)
-		.then(function(response) {return response.json();})
-		.then(createUser.bind(btn));
-	};
 	getUserInfo(userId);
 };
+
 function findCommentUser () {
 	var postDelete = event.target.parentElement.querySelector("#postIdDel");
+
 	if(postDelete){
 		postDelete.parentElement.removeChild(postDelete);
 		return;
 	}else loaderGif(event.target);
+
 	var btn = this;
 	var idCom = this.postId;
-	function getUserInfoCom (userIdCom){
 
+	function getUserInfoCom (userIdCom){
 		fetch(urlApi + 'posts/' + idCom + '/comments')
 		.then(function(response) {return response.json();})
 		.then(createComment.bind(btn));
 	};
 
 	getUserInfoCom(idCom);
+};/////Запрос КОММЕНТАРИЙ!!!
+
+function getPostInfo(userId) {
+	return store.some(item => { return item.id === userId && item.postInfo; });
 };
-function createUser (obj) {
+
+function createUser (userId, obj) {
+	var postInfo = obj;
+	console.log(store);
+	store.forEach(item => {
+		if (item.id === userId) {
+			item.postInfo = postInfo;
+		}
+	});
+
+	var btn = this.parentElement
+	
 	var modalWinUser = document.createElement('div');
 	if(this.parentElement.getElementsByTagName('ul')[0]){
 		this.parentElement.insertBefore(modalWinUser, this.parentElement.getElementsByTagName('ul')[0])
@@ -82,6 +108,7 @@ function createUser (obj) {
 	`;
 	getClassLoadStop.parentElement.removeChild(getClassLoadStop);
 };
+
 function createComment(arr){
 	var divPost = this.parentElement.appendChild(document.createElement('ul'));
 	divPost.id = 'postIdDel';
@@ -104,15 +131,18 @@ function createComment(arr){
 	});
 	divPost.appendChild(fragment);
 	getClassLoadStop.parentElement.removeChild(getClassLoadStop);
-};
-function createList(arr){
+};/////РЕНДЕР КОММЕНТАРИЙ!!!
+function createList(arr) {
+	store = arr;
+};//РАБОТАЕТ!!!//РАБОТАЕТ!!!//РАБОТАЕТ!!!
+function renderList(){
 	var ulItem = document.getElementById('container1').appendChild(document.createElement('ul'));
 
 		ulItem.className = 'liItem';
 		
 		var fragment = document.createDocumentFragment();
 	
-	arr.forEach(function(item){
+	store.forEach(function(item){
 		
 		var liItem = fragment.appendChild(document.createElement('li'));
 		liItem.style.position = 'relative';
@@ -139,7 +169,7 @@ function createList(arr){
 	ulItem.appendChild(fragment);
 	searchHeader.removeEventListener("click", getPosts);
 	getClassLoadStop.parentElement.removeChild(getClassLoadStop);
-};
+};//РАБОТАЕТ!!!//РАБОТАЕТ!!!//РАБОТАЕТ!!!
 function loaderGif(target){
 	// console.log(target);
 	var loader = target.parentElement.appendChild(document.createElement('div'));
@@ -155,5 +185,5 @@ function loaderGif(target){
 		if (target.innerHTML === 'Коментарии к посту') {
 			loader.innerHTML = `<img src="images/loader.gif" style="width:50px;height:50px;position:absolute;left:0;top:0;right:0;bottom:0;margin:auto;">`;
 		}
-};
+};//РАБОТАЕТ!!!//РАБОТАЕТ!!!//РАБОТАЕТ!!!
 })();
